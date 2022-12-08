@@ -1,5 +1,7 @@
 import * as model from './model.js';
 import musicView from './views/musicView.js';
+import searchResultView from './views/searchResultView.js';
+import searchView from './views/searchView.js';
 
 // Music Load
 
@@ -7,6 +9,8 @@ const controllerLoadMusic = async function () {
   try {
     //1) Hash change
     const id = window.location.hash.slice(1);
+
+    if (!id) return;
 
     // 2) Render Spinner
     musicView.renderSpinner();
@@ -27,27 +31,27 @@ const controllerLoadMusic = async function () {
 
 // Search Query
 
-const controllerSearchMusic = async function (quary) {
+const controllerSearchMusic = async function () {
   try {
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': '5feefb9bb7msh3a72f494ab9c76fp175dd7jsnd2910d70b346',
-        'X-RapidAPI-Host': 'spotify23.p.rapidapi.com',
-      },
-    };
+    // 1) Render Spinner
+    searchResultView.renderSpinner();
 
-    const res = await fetch(
-      `https://spotify23.p.rapidapi.com/search/?q=${quary}E&type=multi&offset=0&limit=10&numberOfTopResults=5`,
-      options
-    );
+    // 2) Get Query
+    const query = searchView.getQuery();
 
-    const data = await res.json();
+    if (!query) return;
 
-    console.log(data);
+    // 3) Search Results
+    await model.searchMusic(query);
+
+    searchResultView.render(model.stateObj.results);
   } catch (err) {
     console.error(err);
   }
 };
 
-controllerSearchMusic('Kid Francescoli');
+const init = function () {
+  searchView.addHandlerSearch(controllerSearchMusic);
+};
+
+init();

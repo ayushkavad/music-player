@@ -1,29 +1,17 @@
 import { async } from 'regenerator-runtime';
-import { API_KEY } from './config';
+import { API, API_PATH } from './config';
+import { getJSON } from './helpers';
 
 export const stateObj = {
   search: {},
+  results: [],
 };
+
+console.log(stateObj);
 
 export const loadMusic = async function (id) {
   try {
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': `${API_KEY}`,
-        'X-RapidAPI-Host': 'spotify23.p.rapidapi.com',
-      },
-    };
-
-    const res = await fetch(
-      `https://spotify23.p.rapidapi.com/tracks/?ids=${id}`,
-      options
-    );
-
-    const data = await res.json();
-
-    console.log(data);
-    if (!res.ok) throw new Error(`${res.status}, ${data.message}`);
+    const data = await getJSON(`${API}tracks/?ids=${id}`);
 
     const [state] = data.tracks;
     stateObj.search.state = {
@@ -37,9 +25,24 @@ export const loadMusic = async function (id) {
       imageSmall: state.album.images[2].url,
       duration: state.duration_ms,
     };
-
-    // console.log(state);
   } catch (err) {
-    console.error(err);
+    throw err;
+  }
+};
+
+export const searchMusic = async function (quary) {
+  try {
+    const data = await getJSON(`${API}search/?q=${quary}${API_PATH}`);
+
+    stateObj.results = data.tracks.items.map(({ data }) => {
+      return {
+        id: data.id,
+        title: data.name,
+        artist: data.artists.items[0].profile.name,
+        imageMedium: data.albumOfTrack.coverArt.sources[1].url,
+      };
+    });
+  } catch (err) {
+    console.log(err);
   }
 };

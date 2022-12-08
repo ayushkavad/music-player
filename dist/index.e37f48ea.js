@@ -536,11 +536,16 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _modelJs = require("./model.js");
 var _musicViewJs = require("./views/musicView.js");
 var _musicViewJsDefault = parcelHelpers.interopDefault(_musicViewJs);
+var _searchResultViewJs = require("./views/searchResultView.js");
+var _searchResultViewJsDefault = parcelHelpers.interopDefault(_searchResultViewJs);
+var _searchViewJs = require("./views/searchView.js");
+var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
 // Music Load
 const controllerLoadMusic = async function() {
     try {
         //1) Hash change
         const id = window.location.hash.slice(1);
+        if (!id) return;
         // 2) Render Spinner
         (0, _musicViewJsDefault.default).renderSpinner();
         // 3) Load Music
@@ -556,47 +561,42 @@ const controllerLoadMusic = async function() {
     "load"
 ].forEach((ev)=>window.addEventListener(ev, controllerLoadMusic));
 // Search Query
-const controllerSearchMusic = async function(quary) {
+const controllerSearchMusic = async function() {
     try {
-        const options = {
-            method: "GET",
-            headers: {
-                "X-RapidAPI-Key": "5feefb9bb7msh3a72f494ab9c76fp175dd7jsnd2910d70b346",
-                "X-RapidAPI-Host": "spotify23.p.rapidapi.com"
-            }
-        };
-        const res = await fetch(`https://spotify23.p.rapidapi.com/search/?q=${quary}E&type=multi&offset=0&limit=10&numberOfTopResults=5`, options);
-        const data = await res.json();
-        console.log(data);
+        // 1) Render Spinner
+        (0, _searchResultViewJsDefault.default).renderSpinner();
+        // 2) Get Query
+        const query = (0, _searchViewJsDefault.default).getQuery();
+        if (!query) return;
+        // 3) Search Results
+        await _modelJs.searchMusic(query);
+        (0, _searchResultViewJsDefault.default).render(_modelJs.stateObj.results);
     } catch (err) {
         console.error(err);
     }
 };
-controllerSearchMusic("Kid Francescoli");
+const init = function() {
+    (0, _searchViewJsDefault.default).addHandlerSearch(controllerSearchMusic);
+};
+init();
 
-},{"./model.js":"Y4A21","./views/musicView.js":"1fyUX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"Y4A21":[function(require,module,exports) {
+},{"./model.js":"Y4A21","./views/musicView.js":"1fyUX","./views/searchResultView.js":"jcmmR","./views/searchView.js":"9OQAM","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"Y4A21":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "stateObj", ()=>stateObj);
 parcelHelpers.export(exports, "loadMusic", ()=>loadMusic);
+parcelHelpers.export(exports, "searchMusic", ()=>searchMusic);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _config = require("./config");
+var _helpers = require("./helpers");
 const stateObj = {
-    search: {}
+    search: {},
+    results: []
 };
+console.log(stateObj);
 const loadMusic = async function(id) {
     try {
-        const options = {
-            method: "GET",
-            headers: {
-                "X-RapidAPI-Key": `${(0, _config.API_KEY)}`,
-                "X-RapidAPI-Host": "spotify23.p.rapidapi.com"
-            }
-        };
-        const res = await fetch(`https://spotify23.p.rapidapi.com/tracks/?ids=${id}`, options);
-        const data = await res.json();
-        console.log(data);
-        if (!res.ok) throw new Error(`${res.status}, ${data.message}`);
+        const data = await (0, _helpers.getJSON)(`${(0, _config.API)}tracks/?ids=${id}`);
         const [state] = data.tracks;
         stateObj.search.state = {
             id: state.id,
@@ -609,13 +609,27 @@ const loadMusic = async function(id) {
             imageSmall: state.album.images[2].url,
             duration: state.duration_ms
         };
-    // console.log(state);
     } catch (err) {
-        console.error(err);
+        throw err;
+    }
+};
+const searchMusic = async function(quary) {
+    try {
+        const data = await (0, _helpers.getJSON)(`${(0, _config.API)}search/?q=${quary}${(0, _config.API_PATH)}`);
+        stateObj.results = data.tracks.items.map(({ data  })=>{
+            return {
+                id: data.id,
+                title: data.name,
+                artist: data.artists.items[0].profile.name,
+                imageMedium: data.albumOfTrack.coverArt.sources[1].url
+            };
+        });
+    } catch (err) {
+        console.log(err);
     }
 };
 
-},{"regenerator-runtime":"dXNgZ","./config":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dXNgZ":[function(require,module,exports) {
+},{"regenerator-runtime":"dXNgZ","./config":"k5Hzs","./helpers":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dXNgZ":[function(require,module,exports) {
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -1201,8 +1215,14 @@ try {
 },{}],"k5Hzs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "API", ()=>API);
 parcelHelpers.export(exports, "API_KEY", ()=>API_KEY);
-const API_KEY = "6a0bbfd1bbmsh82e6b6932d34345p17bd22jsnca569c5941b0";
+parcelHelpers.export(exports, "API_PATH", ()=>API_PATH);
+parcelHelpers.export(exports, "SET_TIMEOUT", ()=>SET_TIMEOUT);
+const API = "https://spotify23.p.rapidapi.com/";
+const API_KEY = "cb4ac8601dmshe3b4263e6b61ab3p12d3bfjsna559bec742c6";
+const API_PATH = "E&type=multi&offset=0&limit=10&numberOfTopResults=5";
+const SET_TIMEOUT = 10;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -1234,7 +1254,40 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"1fyUX":[function(require,module,exports) {
+},{}],"hGI1E":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON);
+var _config = require("./config");
+const timeout = function(s) {
+    return new Promise(function(_, reject) {
+        setTimeout(function() {
+            reject(new Error(`Request took too long! Timeout after ${s} second`));
+        }, s * 1000);
+    });
+};
+const getJSON = async function(url) {
+    try {
+        const options = {
+            method: "GET",
+            headers: {
+                "X-RapidAPI-Key": `${(0, _config.API_KEY)}`,
+                "X-RapidAPI-Host": "spotify23.p.rapidapi.com"
+            }
+        };
+        const res = await Promise.race([
+            fetch(`${url}`, options),
+            timeout((0, _config.SET_TIMEOUT))
+        ]);
+        const data = await res.json();
+        if (!res.ok) throw new Error(`${res.status}, ${data.message}`);
+        return data;
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+},{"./config":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1fyUX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _iconsSvg = require("../../img/icons.svg");
@@ -1392,6 +1445,57 @@ class View {
 }
 exports.default = View;
 
-},{"../../img/icons.svg":"cMpiy","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire067a")
+},{"../../img/icons.svg":"cMpiy","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jcmmR":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+class searchResultView extends (0, _viewDefault.default) {
+    _parentEl = document.querySelector(".results");
+    _generateMarkup() {
+        return this._data.map((data)=>{
+            return `
+      <li class="preview">
+          <a class="preview__link " href="#${data.id}">
+          <figure class="preview__fig">
+              <img src="${data.imageMedium}" alt="Test" />
+          </figure>
+          <div class="preview__data">
+              <h4 class="preview__title">${data.title}</h4>
+              <p class="preview__publisher">${data.artist}</p>
+          </div>
+          </a>
+      </li>
+      `;
+        }).join("");
+    }
+}
+exports.default = new searchResultView();
+
+},{"./View":"5cUXS","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9OQAM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _viewJs = require("./View.js");
+var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
+class SearchView extends (0, _viewJsDefault.default) {
+    _parentEl = document.querySelector(".search");
+    addHandlerSearch(handler) {
+        this._parentEl.addEventListener("submit", function(e) {
+            e.preventDefault();
+            handler();
+        });
+    }
+    getQuery() {
+        const query = this._parentEl.querySelector(".search__field").value;
+        this._clearInput();
+        return query;
+    }
+    _clearInput() {
+        this._parentEl.querySelector(".search__field").value = "";
+    }
+}
+exports.default = new SearchView();
+
+},{"./View.js":"5cUXS","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire067a")
 
 //# sourceMappingURL=index.e37f48ea.js.map

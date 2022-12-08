@@ -1,1 +1,4 @@
-export const API_KEY = '6a0bbfd1bbmsh82e6b6932d34345p17bd22jsnca569c5941b0';
+export const API = 'https://spotify23.p.rapidapi.com/';
+export const API_KEY = 'cb4ac8601dmshe3b4263e6b61ab3p12d3bfjsna559bec742c6';
+export const API_PATH = 'E&type=multi&offset=0&limit=10&numberOfTopResults=5';
+export const SET_TIMEOUT = 10;
