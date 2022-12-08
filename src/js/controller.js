@@ -7,21 +7,24 @@ import searchView from './views/searchView.js';
 
 const controllerLoadMusic = async function () {
   try {
-    //1) Hash change
+    //1) Render message
+    musicView.renderMessage();
+
+    //2) Hash change
     const id = window.location.hash.slice(1);
 
     if (!id) return;
 
-    // 2) Render Spinner
+    // 3) Render Spinner
     musicView.renderSpinner();
 
-    // 3) Load Music
+    // 4) Load Music
     await model.loadMusic(id);
 
-    // 4) Render Music
+    // 5) Render Music
     musicView.render(model.stateObj.search);
   } catch (err) {
-    console.error(err);
+    musicView.renderError();
   }
 };
 
@@ -44,9 +47,9 @@ const controllerSearchMusic = async function () {
     // 3) Search Results
     await model.searchMusic(query);
 
-    searchResultView.render(model.stateObj.results);
+    searchResultView.render(model.stateObj.search.results);
   } catch (err) {
-    console.error(err);
+    searchResultView.renderError();
   }
 };
 

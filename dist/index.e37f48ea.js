@@ -543,17 +543,19 @@ var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
 // Music Load
 const controllerLoadMusic = async function() {
     try {
-        //1) Hash change
+        //1) Render message
+        (0, _musicViewJsDefault.default).renderMessage();
+        //2) Hash change
         const id = window.location.hash.slice(1);
         if (!id) return;
-        // 2) Render Spinner
+        // 3) Render Spinner
         (0, _musicViewJsDefault.default).renderSpinner();
-        // 3) Load Music
+        // 4) Load Music
         await _modelJs.loadMusic(id);
-        // 4) Render Music
+        // 5) Render Music
         (0, _musicViewJsDefault.default).render(_modelJs.stateObj.search);
     } catch (err) {
-        console.error(err);
+        (0, _musicViewJsDefault.default).renderError();
     }
 };
 [
@@ -570,9 +572,9 @@ const controllerSearchMusic = async function() {
         if (!query) return;
         // 3) Search Results
         await _modelJs.searchMusic(query);
-        (0, _searchResultViewJsDefault.default).render(_modelJs.stateObj.results);
+        (0, _searchResultViewJsDefault.default).render(_modelJs.stateObj.search.results);
     } catch (err) {
-        console.error(err);
+        (0, _searchResultViewJsDefault.default).renderError();
     }
 };
 const init = function() {
@@ -590,13 +592,17 @@ var _regeneratorRuntime = require("regenerator-runtime");
 var _config = require("./config");
 var _helpers = require("./helpers");
 const stateObj = {
-    search: {},
-    results: []
+    search: {
+        quary: "",
+        results: []
+    }
 };
 console.log(stateObj);
 const loadMusic = async function(id) {
     try {
+        // 1) Loading Search Music
         const data = await (0, _helpers.getJSON)(`${(0, _config.API)}tracks/?ids=${id}`);
+        // 2) Create New Object
         const [state] = data.tracks;
         stateObj.search.state = {
             id: state.id,
@@ -615,8 +621,12 @@ const loadMusic = async function(id) {
 };
 const searchMusic = async function(quary) {
     try {
+        // 1) Current Query
+        stateObj.search.quary = quary;
+        // 2) Loading Search Results
         const data = await (0, _helpers.getJSON)(`${(0, _config.API)}search/?q=${quary}${(0, _config.API_PATH)}`);
-        stateObj.results = data.tracks.items.map(({ data  })=>{
+        // 3) Storing Search Result
+        stateObj.search.results = data.tracks.items.map(({ data  })=>{
             return {
                 id: data.id,
                 title: data.name,
@@ -625,7 +635,7 @@ const searchMusic = async function(quary) {
             };
         });
     } catch (err) {
-        console.log(err);
+        throw err;
     }
 };
 
@@ -1220,7 +1230,7 @@ parcelHelpers.export(exports, "API_KEY", ()=>API_KEY);
 parcelHelpers.export(exports, "API_PATH", ()=>API_PATH);
 parcelHelpers.export(exports, "SET_TIMEOUT", ()=>SET_TIMEOUT);
 const API = "https://spotify23.p.rapidapi.com/";
-const API_KEY = "cb4ac8601dmshe3b4263e6b61ab3p12d3bfjsna559bec742c6";
+const API_KEY = "5905214638msh40ee2a32722bb9ap15038cjsnac7a01bb10ff";
 const API_PATH = "E&type=multi&offset=0&limit=10&numberOfTopResults=5";
 const SET_TIMEOUT = 10;
 
@@ -1259,6 +1269,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getJSON", ()=>getJSON);
 var _config = require("./config");
+// Timeout After 10 seconds
 const timeout = function(s) {
     return new Promise(function(_, reject) {
         setTimeout(function() {
@@ -1296,6 +1307,8 @@ var _view = require("./View");
 var _viewDefault = parcelHelpers.interopDefault(_view);
 class MusicView extends (0, _viewDefault.default) {
     _parentEl = document.querySelector(".recipe");
+    _errorMessage = "Something went wrong! please try again.";
+    _message = "Want better recommendation ? Pick some music you like :)";
     _generateMarkup() {
         return `
     <figure class="recipe__fig">
@@ -1442,6 +1455,35 @@ class View {
     _clear() {
         this._parentEl.innerHTML = "";
     }
+    renderError(message = this._errorMessage) {
+        const markup = `
+      <div class="error">
+        <div>
+          <svg>
+            <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+        this._parentEl.innerHTML = "";
+        this._parentEl.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderMessage(message = this._message) {
+        console.log(message);
+        const markup = `
+      <div class="message bg">
+        <div>
+          <svg>
+            <use href="${(0, _iconsSvgDefault.default)}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+        this._parentEl.innerHTML = "";
+        this._parentEl.insertAdjacentHTML("afterbegin", markup);
+    }
 }
 exports.default = View;
 
@@ -1452,6 +1494,7 @@ var _view = require("./View");
 var _viewDefault = parcelHelpers.interopDefault(_view);
 class searchResultView extends (0, _viewDefault.default) {
     _parentEl = document.querySelector(".results");
+    _errorMessage = "Someting want wrong! please try again :(";
     _generateMarkup() {
         return this._data.map((data)=>{
             return `

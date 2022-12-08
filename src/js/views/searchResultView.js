@@ -2,6 +2,7 @@ import View from './View';
 
 class searchResultView extends View {
   _parentEl = document.querySelector('.results');
+  _errorMessage = 'Someting want wrong! please try again :(';
 
   _generateMarkup() {
     return this._data

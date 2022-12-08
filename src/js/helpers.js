@@ -1,5 +1,6 @@
 import { API_KEY, SET_TIMEOUT } from './config';
 
+// Timeout After 10 seconds
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -8,6 +9,7 @@ const timeout = function (s) {
   });
 };
 
+// Fetching data and Rejecting Promise
 export const getJSON = async function (url) {
   try {
     const options = {

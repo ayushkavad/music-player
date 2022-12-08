@@ -24,4 +24,35 @@ export default class View {
   _clear() {
     this._parentEl.innerHTML = '';
   }
+
+  renderError(message = this._errorMessage) {
+    const markup = `
+      <div class="error">
+        <div>
+          <svg>
+            <use href="${icons}#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+    this._parentEl.innerHTML = '';
+    this._parentEl.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  renderMessage(message = this._message) {
+    console.log(message);
+    const markup = `
+      <div class="message bg">
+        <div>
+          <svg>
+            <use href="${icons}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div>
+    `;
+    this._parentEl.innerHTML = '';
+    this._parentEl.insertAdjacentHTML('afterbegin', markup);
+  }
 }

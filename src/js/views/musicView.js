@@ -3,6 +3,8 @@ import View from './View';
 
 class MusicView extends View {
   _parentEl = document.querySelector('.recipe');
+  _errorMessage = 'Something went wrong! please try again.';
+  _message = 'Want better recommendation ? Pick some music you like :)';
 
   _generateMarkup() {
     return `

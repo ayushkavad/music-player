@@ -3,16 +3,20 @@ import { API, API_PATH } from './config';
 import { getJSON } from './helpers';
 
 export const stateObj = {
-  search: {},
-  results: [],
+  search: {
+    quary: '',
+    results: [],
+  },
 };
 
 console.log(stateObj);
 
 export const loadMusic = async function (id) {
   try {
+    // 1) Loading Search Music
     const data = await getJSON(`${API}tracks/?ids=${id}`);
 
+    // 2) Create New Object
     const [state] = data.tracks;
     stateObj.search.state = {
       id: state.id,
@@ -32,9 +36,14 @@ export const loadMusic = async function (id) {
 
 export const searchMusic = async function (quary) {
   try {
+    // 1) Current Query
+    stateObj.search.quary = quary;
+
+    // 2) Loading Search Results
     const data = await getJSON(`${API}search/?q=${quary}${API_PATH}`);
 
-    stateObj.results = data.tracks.items.map(({ data }) => {
+    // 3) Storing Search Result
+    stateObj.search.results = data.tracks.items.map(({ data }) => {
       return {
         id: data.id,
         title: data.name,
@@ -43,6 +52,6 @@ export const searchMusic = async function (quary) {
       };
     });
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
