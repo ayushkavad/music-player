@@ -1,0 +1,9 @@
+:root {
+    --color_primary: #bdbdbd;
+
+    --color-grey-light-1: #2a2a2a;
+    --color-grey-light-3: #767676;
+    --color-grey-dark-1: #c4c4c4;
+
+    --bp-medium: 61.25em;
+}

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel index.html",
-    "build": "parcel build index.html"
+    "start": "parcel public/index.html",
+    "build": "parcel build public/index.html"
   },
   "author": "Ayush Kavad",
   "license": "ISC",
