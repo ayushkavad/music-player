@@ -1,70 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700"
-      rel="stylesheet"
-   
-      />
-    <link type="image/png" sizes="16x16" rel="icon" href="./src/img/favicon.ico" />
-    <link rel="stylesheet" href="./src/sass/main.scss" />
-    <script defer type="module" src="./src/js/controller.js"></script>
-    <title>lights</title>
-  </head>
-  <body>
-    <div class="container">
-      <header class="header">
-        <img src="src/img/pngwing.com.png" alt="Logo" class="header__logo" />
-        <div class="search_box">
-          <form class="search">
-            <input
-              type="text"
-              class="search__field"
-              placeholder="Search over 1,000,000 songs..."
-            />
-          </form>
-          <button class="btn search__btn">
-            <svg class="search__icon">
-              <use href="src/img/icons.svg#icon-search"></use>
-            </svg>
-            <span>Search</span>
-          </button>
-        </div>
 
-        <nav class="nav">
-          <ul class="nav__list">
-            <li class="nav__item">
-              <button class="nav__btn nav__btn--add-recipe">
-                <svg class="nav__icon">
-                  <use href="src/img/icons.svg#icon-edit"></use>
-                </svg>
-                <span>Add Song</span>
-              </button>
-            </li>
-            <li class="nav__item">
-              <button class="nav__btn nav__btn--bookmarks">
-                <svg class="nav__icon">
-                  <use href="src/img/icons.svg#icon-bookmark"></use>
-                </svg>
-                <span>Bookmarks</span>
-              </button>
-              <div class="bookmarks">
-                <ul class="bookmarks__list">
-                  <div class="message">
-                    <div>
-                      <svg>
-                        <use href="src/img/icons.svg#icon-smile"></use>
-                      </svg>
-                    </div>
-                    <p>
-                      No bookmarks yet. Find a nice song and bookmark it :)
-                    </p>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700" rel="stylesheet" />
+  <link type="image/png" sizes="16x16" rel="icon" href="./src/img/favicon.ico" />
+  <link rel="stylesheet" href="./src/css/main.css" />
+  <script defer type="module" src="./src/js/controller.js"></script>
+  <title>lights</title>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <img src="src/img/pngwing.com.png" alt="Logo" class="header__logo" />
+      <div class="search_box">
+        <form class="search">
+          <input type="text" class="mdc-form-field" placeholder="Search over 1,000,000 songs ..." />
+        </form>
+        <button class="mdc-button">
+          <svg class="search__icon">
+            <use href="src/img/icons.svg#icon-search"></use>
+          </svg>
+          <span>Search</span>
+        </button>
+      </div>
+
+      <nav class="nav">
+        <ul class="nav__list">
+          <li class="nav__item">
+            <button class="nav__btn nav__btn--add-recipe mdc-button">
+              <svg class="nav__icon">
+                <use href="src/img/icons.svg#icon-edit"></use>
+              </svg>
+              <span>Add Song</span>
+            </button>
+          </li>
+          <li class="nav__item">
+            <button class="nav__btn nav__btn--bookmarks mdc-button">
+              <svg class="nav__icon">
+                <use href="src/img/icons.svg#icon-bookmark"></use>
+              </svg>
+              <span>Bookmarks</span>
+            </button>
+            <div class="bookmarks">
+              <ul class="bookmarks__list">
+                <div class="message">
+                  <div>
+                    <svg>
+                      <use href="src/img/icons.svg#icon-smile"></use>
+                    </svg>
                   </div>
+                  <p>
+                    No bookmarks yet. Find a nice song and bookmark it :)
+                  </p>
+                </div>
 
-                  <!-- <li class="preview">
+                <!-- <li class="preview">
                     <a class="preview__link" href="#23456">
                       <figure class="preview__fig">
                         <img src="src/img/test-1.jpg" alt="Test" />
@@ -77,16 +71,16 @@
                       </div>
                     </a>
                   </li> -->
-                </ul>
-              </div>
-            </li>
-          </ul>
-        </nav>
-      </header>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </header>
 
-      <div class="search-results">
-        <ul class="results">
-          <!-- <li class="preview">
+    <div class="search-results">
+      <ul class="results">
+        <!-- <li class="preview">
             <a class="preview__link preview__link--active" href="#23456">
               <figure class="preview__fig">
                 <img src="src/img/play.png" alt="Test" />
@@ -102,10 +96,10 @@
               </div>
             </a>
           </li> -->
-        </ul>
+      </ul>
 
-        <div class="pagination">
-          <!-- <button class="btn--inline pagination__btn--prev">
+      <div class="pagination">
+        <!-- <button class="btn--inline pagination__btn--prev">
             <svg class="search__icon">
               <use href="src/img/icons.svg#icon-arrow-left"></use>
             </svg>
@@ -117,21 +111,16 @@
               <use href="src/img/icons.svg#icon-arrow-right"></use>
             </svg>
           </button> -->
-        </div>
-
-        <p class="copyright">
-          &copy; Copyright by
-          <a
-            class="twitter-link"
-            target="_blank"
-            href="https://twitter.com/ayushkavad"
-            >Ayush Kavad</a
-          >.
-        </p>
       </div>
 
-      <div class="recipe">
-        <!-- <div class="message bg">
+      <p class="copyright">
+        &copy; Copyright by
+        <a class="twitter-link" target="_blank" href="https://twitter.com/ayushkavad">Ayush Kavad</a>.
+      </p>
+    </div>
+
+    <div class="recipe">
+      <!-- <div class="message bg">
           <div>
             <svg>
               <use href="src/img/icons.svg#icon-smile"></use>
@@ -140,13 +129,13 @@
           <p>Start by searching for a recipe or an ingredient. Have fun!</p>
         </div> -->
 
-        <!-- <div class="spinner">
+      <!-- <div class="spinner">
           <svg>
             <use href="src/img/icons.svg#icon-loader"></use>
           </svg>
         </div> -->
 
-        <!-- <div class="error">
+      <!-- <div class="error">
             <div>
               <svg>
                 <use href="src/img/icons.svg#icon-alert-triangle"></use>
@@ -155,7 +144,7 @@
             <p>No recipes found for your query. Please try again!</p>
           </div> -->
 
-        <!-- <figure class="recipe__fig">
+      <!-- <figure class="recipe__fig">
           <img src="src/img/test-1.jpg" alt="Tomato" class="recipe__img" />
           <h1 class="recipe__title">
             <span>Pasta with tomato cream sauce</span>
@@ -202,8 +191,8 @@
          </div>
       </div> -->
 
-       
-        <!-- <div class="play">
+
+      <!-- <div class="play">
           <div class="play__album">
             <div>
               <img src="./src/img/play.png" alt="" width="200" />
@@ -306,5 +295,6 @@
         </button>
       </form>
     </div> -->
-  </body>
+</body>
+
 </html>

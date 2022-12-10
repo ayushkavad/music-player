@@ -1,0 +1,152 @@
+@import "https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css";
+:root {
+  --color_primary: #bdbdbd;
+  --color-grey-light-1: #2a2a2a;
+  --color-grey-light-3: #767676;
+  --color-grey-dark-1: #c4c4c4;
+  --bp-medium: 61.25em;
+}
+
+.header {
+  background-color: var(--color-grey-light-1);
+  grid-area: head;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.header__logo {
+  height: 4.6rem;
+  margin-left: 4rem;
+  display: block;
+}
+
+.search_box {
+  height: 4rem;
+  display: flex;
+}
+
+.search {
+  color: #444;
+  background-color: #fff;
+  border-radius: .5rem;
+  align-items: center;
+  margin-right: 1rem;
+  padding-left: 3rem;
+  transition: all .3s;
+  display: flex;
+}
+
+.search :focus-within {
+  box-shadow: 0 .7rem 3rem rgba(var(--color-grey-dark-1), .08);
+  transform: translateY(-2px);
+}
+
+.search__field {
+  color: inherit;
+  width: 30rem;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 1.7rem;
+}
+
+.search :focus {
+  outline: none;
+}
+
+.search ::placeholder {
+  color: var(--color-grey-light-3);
+}
+
+.search__btn {
+  border-radius: .5rem;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.nav {
+  align-self: stretch;
+  margin-right: 2.5rem;
+}
+
+.nav__list {
+  height: 100%;
+  list-style: none;
+  display: flex;
+}
+
+.nav__item {
+  position: relative;
+}
+
+.nav__btn {
+  height: 100%;
+  color: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: none;
+  border: none;
+  align-items: center;
+  padding: 0 1.5rem;
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 700;
+  transition: all .3s;
+  display: flex;
+}
+
+.nav_btn svg {
+  height: 2.4rem;
+  width: 2.4rem;
+  fill: var(--color-primary);
+  margin-right: .7rem;
+  transform: translateY(-1px);
+}
+
+.nav__btn :focus {
+  outline: none;
+}
+
+.nav__btn :hover {
+  background-image: var(--gradient);
+}
+
+.bookmarks {
+  z-index: 10;
+  width: 40rem;
+  box-shadow: 0 .8rem 5rem 2rem rgba(var(--color-grey-dark-1), .1);
+  visibility: hidden;
+  opacity: 0;
+  background-color: #2a2a2a;
+  padding: 1rem 0;
+  transition: all .5s .2s;
+  position: absolute;
+  right: -2.5rem;
+}
+
+.bookmarks__list {
+  list-style: none;
+}
+
+.bookmarks__field {
+  cursor: pointer;
+  height: 100%;
+  align-items: center;
+  padding: 0 4rem;
+  transition: all .3s;
+  display: flex;
+}
+
+.bookmarks__field :hover {
+  background-color: #bbb;
+}
+
+.bookmarks :hover, .nav__btn--bookmarks:hover {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+/*# sourceMappingURL=index.683f8f74.css.map */

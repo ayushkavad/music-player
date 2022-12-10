@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel index.html",
-    "build": "parcel build index.html"
+    "start": "parcel public/index.html",
+    "build": "parcel build public/index.html"
   },
   "author": "Ayush Kavad",
   "license": "ISC",
   "dependencies": {
+    "@material/button": "^14.0.0",
     "core-js": "^3.26.1",
     "regenerator-runtime": "^0.13.11"
   },
