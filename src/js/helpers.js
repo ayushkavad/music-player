@@ -13,7 +13,6 @@ const timeout = function (s) {
 export const getJSON = async function (url) {
   try {
     const options = {
-      method: 'GET',
       headers: {
         'X-RapidAPI-Key': `${API_KEY}`,
         'X-RapidAPI-Host': 'spotify23.p.rapidapi.com',

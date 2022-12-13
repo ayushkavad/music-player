@@ -5,9 +5,11 @@ class searchResultView extends View {
   _errorMessage = 'Someting want wrong! please try again :(';
 
   _generateMarkup() {
-    return this._data
-      .map((data) => {
-        return `
+    return this._data.map(this._getGenerateMarkup).join('');
+  }
+
+  _getGenerateMarkup(data) {
+    return `
       <li class="preview">
           <a class="preview__link " href="#${data.id}">
           <figure class="preview__fig">
@@ -19,9 +21,7 @@ class searchResultView extends View {
           </div>
           </a>
       </li>
-      `;
-      })
-      .join('');
+    `;
   }
 }
 

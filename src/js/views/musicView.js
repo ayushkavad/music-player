@@ -6,10 +6,26 @@ class MusicView extends View {
   _errorMessage = 'Something went wrong! please try again.';
   _message = 'Want better recommendation ? Pick some music you like :)';
 
+  addHandlerRender(handler) {
+    ['hashchange', 'load'].forEach((ev) =>
+      window.addEventListener(ev, handler)
+    );
+  }
+
+  addHandlerController(handler) {
+    this._parentEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.play-song');
+      if (!btn) return;
+      handler();
+    });
+  }
+
   _generateMarkup() {
     return `
     <figure class="recipe__fig">
-      <img src="${this._data.state.imageBig}" alt="${this._data.state.title}" class="recipe__img" />
+      <img src="${this._data.state.imageBig}" alt="${
+      this._data.state.title
+    }" class="recipe__img" />
       <h1 class="recipe__title">
         <span>${this._data.state.title}</span>
       </h1>
@@ -45,15 +61,24 @@ class MusicView extends View {
           <svg class="play__track__img">
             <use href="${icons}#icon-left"></use>
           </svg>
+     
+          
           <svg class="play__track__img play-song">
-              <use href="${icons}#icon-pause"></use>
+         
+              <use href="${icons}#icon-${
+      !this._data.state.status ? 'play' : 'pause'
+    }"></use>
           </svg>
+         
           <svg class="play__track__img">
               <use href="${icons}#icon-right"></use>
           </svg>
      </div>
    </div>
 
+
+   <audio src="${this._data.state.url}" class="myAudio"></audio>
+  
     <div class="play">
       <div class="play__album">
         <div>
@@ -83,6 +108,7 @@ class MusicView extends View {
       </div>
     </div>
   </div>
+
 `;
   }
 }

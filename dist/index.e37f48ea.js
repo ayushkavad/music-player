@@ -540,7 +540,11 @@ var _searchResultViewJs = require("./views/searchResultView.js");
 var _searchResultViewJsDefault = parcelHelpers.interopDefault(_searchResultViewJs);
 var _searchViewJs = require("./views/searchView.js");
 var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
-// Music Load
+let audio;
+const controllerPlayMusic = function(url) {
+    // Music url
+    audio = new Audio(url);
+};
 const controllerLoadMusic = async function() {
     try {
         //1) Render message
@@ -554,15 +558,12 @@ const controllerLoadMusic = async function() {
         await _modelJs.loadMusic(id);
         // 5) Render Music
         (0, _musicViewJsDefault.default).render(_modelJs.stateObj.search);
+        controllerPlayMusic(_modelJs.stateObj.search.state.url);
+    // hello(model.stateObj.search.currentMusic);
     } catch (err) {
         (0, _musicViewJsDefault.default).renderError();
     }
 };
-[
-    "hashchange",
-    "load"
-].forEach((ev)=>window.addEventListener(ev, controllerLoadMusic));
-// Search Query
 const controllerSearchMusic = async function() {
     try {
         // 1) Render Spinner
@@ -577,8 +578,25 @@ const controllerSearchMusic = async function() {
         (0, _searchResultViewJsDefault.default).renderError();
     }
 };
+const musicController = function() {
+    if (!_modelJs.stateObj.search.state.status) {
+        // toggle play icon
+        _modelJs.playMusic(_modelJs.stateObj.search.state);
+        // music play
+        audio.play();
+    } else {
+        // toggle pause icon
+        _modelJs.pauseMusic(_modelJs.stateObj.search.state);
+        // pause music
+        audio.pause();
+    }
+    // update markup
+    (0, _musicViewJsDefault.default).update(_modelJs.stateObj.search);
+};
 const init = function() {
+    (0, _musicViewJsDefault.default).addHandlerRender(controllerLoadMusic);
     (0, _searchViewJsDefault.default).addHandlerSearch(controllerSearchMusic);
+    (0, _musicViewJsDefault.default).addHandlerController(musicController);
 };
 init();
 
@@ -588,16 +606,18 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "stateObj", ()=>stateObj);
 parcelHelpers.export(exports, "loadMusic", ()=>loadMusic);
 parcelHelpers.export(exports, "searchMusic", ()=>searchMusic);
+parcelHelpers.export(exports, "playMusic", ()=>playMusic);
+parcelHelpers.export(exports, "pauseMusic", ()=>pauseMusic);
 var _regeneratorRuntime = require("regenerator-runtime");
 var _config = require("./config");
 var _helpers = require("./helpers");
 const stateObj = {
     search: {
         quary: "",
-        results: []
+        results: [],
+        currentMusic: []
     }
 };
-console.log(stateObj);
 const loadMusic = async function(id) {
     try {
         // 1) Loading Search Music
@@ -616,6 +636,7 @@ const loadMusic = async function(id) {
             duration: state.duration_ms
         };
     } catch (err) {
+        console.log(err);
         throw err;
     }
 };
@@ -635,8 +656,16 @@ const searchMusic = async function(quary) {
             };
         });
     } catch (err) {
+        console.log(err);
         throw err;
     }
+};
+const playMusic = function(music) {
+    stateObj.search.currentMusic.push(music.url);
+    if (music.id === stateObj.search.state.id) stateObj.search.state.status = true;
+};
+const pauseMusic = function(music) {
+    if (music.id === stateObj.search.state.id) stateObj.search.state.status = false;
 };
 
 },{"regenerator-runtime":"dXNgZ","./config":"k5Hzs","./helpers":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dXNgZ":[function(require,module,exports) {
@@ -1230,7 +1259,7 @@ parcelHelpers.export(exports, "API_KEY", ()=>API_KEY);
 parcelHelpers.export(exports, "API_PATH", ()=>API_PATH);
 parcelHelpers.export(exports, "SET_TIMEOUT", ()=>SET_TIMEOUT);
 const API = "https://spotify23.p.rapidapi.com/";
-const API_KEY = "5905214638msh40ee2a32722bb9ap15038cjsnac7a01bb10ff";
+const API_KEY = "3de3033363msh26fb3a03aa26472p1a899djsne8a830a042e1";
 const API_PATH = "E&type=multi&offset=0&limit=10&numberOfTopResults=5";
 const SET_TIMEOUT = 10;
 
@@ -1280,7 +1309,6 @@ const timeout = function(s) {
 const getJSON = async function(url) {
     try {
         const options = {
-            method: "GET",
             headers: {
                 "X-RapidAPI-Key": `${(0, _config.API_KEY)}`,
                 "X-RapidAPI-Host": "spotify23.p.rapidapi.com"
@@ -1309,6 +1337,19 @@ class MusicView extends (0, _viewDefault.default) {
     _parentEl = document.querySelector(".recipe");
     _errorMessage = "Something went wrong! please try again.";
     _message = "Want better recommendation ? Pick some music you like :)";
+    addHandlerRender(handler) {
+        [
+            "hashchange",
+            "load"
+        ].forEach((ev)=>window.addEventListener(ev, handler));
+    }
+    addHandlerController(handler) {
+        this._parentEl.addEventListener("click", (e)=>{
+            const btn = e.target.closest(".play-song");
+            if (!btn) return;
+            handler();
+        });
+    }
     _generateMarkup() {
         return `
     <figure class="recipe__fig">
@@ -1348,15 +1389,22 @@ class MusicView extends (0, _viewDefault.default) {
           <svg class="play__track__img">
             <use href="${0, _iconsSvgDefault.default}#icon-left"></use>
           </svg>
+     
+          
           <svg class="play__track__img play-song">
-              <use href="${0, _iconsSvgDefault.default}#icon-pause"></use>
+         
+              <use href="${0, _iconsSvgDefault.default}#icon-${!this._data.state.status ? "play" : "pause"}"></use>
           </svg>
+         
           <svg class="play__track__img">
               <use href="${0, _iconsSvgDefault.default}#icon-right"></use>
           </svg>
      </div>
    </div>
 
+
+   <audio src="${this._data.state.url}" class="myAudio"></audio>
+  
     <div class="play">
       <div class="play__album">
         <div>
@@ -1386,6 +1434,7 @@ class MusicView extends (0, _viewDefault.default) {
       </div>
     </div>
   </div>
+
 `;
     }
 }
@@ -1441,6 +1490,22 @@ class View {
         this._clear();
         this._parentEl.insertAdjacentHTML("afterbegin", markup);
     }
+    update(data) {
+        this._data = data;
+        const newMarkup = this._generateMarkup();
+        const newDOM = document.createRange().createContextualFragment(newMarkup);
+        const newElements = Array.from(newDOM.querySelectorAll("*"));
+        const curElements = Array.from(this._parentEl.querySelectorAll("*"));
+        newElements.forEach((newEl, i)=>{
+            const curEl = curElements[i];
+            // console.log(curEl, newEl.isEqualNode(curEl));
+            // Updates changed TEXT
+            if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") // console.log('💥', newEl.firstChild.nodeValue.trim());
+            curEl.textContent = newEl.textContent;
+            // Updates changed ATTRIBUES
+            if (!newEl.isEqualNode(curEl)) Array.from(newEl.attributes).forEach((attr)=>curEl.setAttribute(attr.name, attr.value));
+        });
+    }
     renderSpinner() {
         const markup = `
         <div class="spinner">
@@ -1470,7 +1535,6 @@ class View {
         this._parentEl.insertAdjacentHTML("afterbegin", markup);
     }
     renderMessage(message = this._message) {
-        console.log(message);
         const markup = `
       <div class="message bg">
         <div>
@@ -1496,8 +1560,10 @@ class searchResultView extends (0, _viewDefault.default) {
     _parentEl = document.querySelector(".results");
     _errorMessage = "Someting want wrong! please try again :(";
     _generateMarkup() {
-        return this._data.map((data)=>{
-            return `
+        return this._data.map(this._getGenerateMarkup).join("");
+    }
+    _getGenerateMarkup(data) {
+        return `
       <li class="preview">
           <a class="preview__link " href="#${data.id}">
           <figure class="preview__fig">
@@ -1509,8 +1575,7 @@ class searchResultView extends (0, _viewDefault.default) {
           </div>
           </a>
       </li>
-      `;
-        }).join("");
+    `;
     }
 }
 exports.default = new searchResultView();

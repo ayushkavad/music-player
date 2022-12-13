@@ -37,7 +37,7 @@ html {
 }
 
 body {
-  font-family: "Nunito Sans", sans-serif;
+  font-family: 'Nunito Sans', sans-serif;
   font-weight: 400;
   line-height: 1.6;
   color: $color-grey-dark-1;
@@ -60,8 +60,8 @@ body {
   grid-template-rows: 8rem minmax(100rem, auto);
   grid-template-columns: 1fr 2fr;
   grid-template-areas:
-    "head head"
-    "list recipe";
+    'head head'
+    'list recipe';
 
   @media only screen and (max-width: $bp-large) {
     max-width: 100%;

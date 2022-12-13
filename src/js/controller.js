@@ -2,8 +2,12 @@ import * as model from './model.js';
 import musicView from './views/musicView.js';
 import searchResultView from './views/searchResultView.js';
 import searchView from './views/searchView.js';
+let audio;
 
-// Music Load
+const controllerPlayMusic = function (url) {
+  // Music url
+  audio = new Audio(url);
+};
 
 const controllerLoadMusic = async function () {
   try {
@@ -23,16 +27,14 @@ const controllerLoadMusic = async function () {
 
     // 5) Render Music
     musicView.render(model.stateObj.search);
+
+    controllerPlayMusic(model.stateObj.search.state.url);
+
+    // hello(model.stateObj.search.currentMusic);
   } catch (err) {
     musicView.renderError();
   }
 };
-
-['hashchange', 'load'].forEach((ev) =>
-  window.addEventListener(ev, controllerLoadMusic)
-);
-
-// Search Query
 
 const controllerSearchMusic = async function () {
   try {
@@ -53,8 +55,26 @@ const controllerSearchMusic = async function () {
   }
 };
 
+const musicController = function () {
+  if (!model.stateObj.search.state.status) {
+    // toggle play icon
+    model.playMusic(model.stateObj.search.state);
+    // music play
+    audio.play();
+  } else {
+    // toggle pause icon
+    model.pauseMusic(model.stateObj.search.state);
+    // pause music
+    audio.pause();
+  }
+  // update markup
+  musicView.update(model.stateObj.search);
+};
+
 const init = function () {
+  musicView.addHandlerRender(controllerLoadMusic);
   searchView.addHandlerSearch(controllerSearchMusic);
+  musicView.addHandlerController(musicController);
 };
 
 init();

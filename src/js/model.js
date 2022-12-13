@@ -6,10 +6,9 @@ export const stateObj = {
   search: {
     quary: '',
     results: [],
+    currentMusic: [],
   },
 };
-
-console.log(stateObj);
 
 export const loadMusic = async function (id) {
   try {
@@ -30,6 +29,7 @@ export const loadMusic = async function (id) {
       duration: state.duration_ms,
     };
   } catch (err) {
+    console.log(err);
     throw err;
   }
 };
@@ -52,6 +52,19 @@ export const searchMusic = async function (quary) {
       };
     });
   } catch (err) {
+    console.log(err);
     throw err;
   }
+};
+
+export const playMusic = function (music) {
+  stateObj.search.currentMusic.push(music.url);
+
+  if (music.id === stateObj.search.state.id)
+    stateObj.search.state.status = true;
+};
+
+export const pauseMusic = function (music) {
+  if (music.id === stateObj.search.state.id)
+    stateObj.search.state.status = false;
 };
