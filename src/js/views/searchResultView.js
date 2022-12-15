@@ -9,9 +9,11 @@ class searchResultView extends View {
   }
 
   _getGenerateMarkup(data) {
+    const id = window.location.hash.slice(1);
+    console.log(id);
     return `
       <li class="preview">
-          <a class="preview__link " href="#${data.id}">
+          <a class="preview__link" href="#${data.id}">
           <figure class="preview__fig">
               <img src="${data.imageMedium}" alt="Test" />
           </figure>

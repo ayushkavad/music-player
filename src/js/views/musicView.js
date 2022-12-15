@@ -20,7 +20,14 @@ class MusicView extends View {
     });
   }
 
+  addAudioEndController(audio, handler) {
+    audio.addEventListener('ended', () => {
+      handler();
+    });
+  }
+
   _generateMarkup() {
+    console.log(this._data);
     return `
     <figure class="recipe__fig">
       <img src="${this._data.state.imageBig}" alt="${
@@ -77,12 +84,12 @@ class MusicView extends View {
    </div>
 
 
-   <audio src="${this._data.state.url}" class="myAudio"></audio>
+   <audio src="" class="myAudio"></audio>
   
     <div class="play">
       <div class="play__album">
         <div>
-          <img src="./src/img/play.png" alt="" width="200" />
+          <img src="${this._data.state.imageMedium}" alt="" width="200" />
         </div>
         <div class="play__info">
           <div class="play__artist">

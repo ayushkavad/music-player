@@ -10,11 +10,12 @@ export const stateObj = {
   },
 };
 
+console.log(stateObj);
+
 export const loadMusic = async function (id) {
   try {
     // 1) Loading Search Music
     const data = await getJSON(`${API}tracks/?ids=${id}`);
-
     // 2) Create New Object
     const [state] = data.tracks;
     stateObj.search.state = {
@@ -51,6 +52,8 @@ export const searchMusic = async function (quary) {
         imageMedium: data.albumOfTrack.coverArt.sources[1].url,
       };
     });
+
+    console.log(data);
   } catch (err) {
     console.log(err);
     throw err;

@@ -545,6 +545,13 @@ const controllerPlayMusic = function(url) {
     // Music url
     audio = new Audio(url);
 };
+// let newSong;
+// function hello(song) {
+//   song.forEach((element) => {
+//     newSong = new Audio(element);
+//     console.log(newSong);
+//   });
+// }
 const controllerLoadMusic = async function() {
     try {
         //1) Render message
@@ -583,16 +590,25 @@ const musicController = function() {
         // toggle play icon
         _modelJs.playMusic(_modelJs.stateObj.search.state);
         // music play
+        if (!audio) return;
         audio.play();
+        (0, _musicViewJsDefault.default).addAudioEndController(audio, pauseEnd);
     } else {
         // toggle pause icon
         _modelJs.pauseMusic(_modelJs.stateObj.search.state);
+        if (!audio) return;
         // pause music
         audio.pause();
     }
     // update markup
     (0, _musicViewJsDefault.default).update(_modelJs.stateObj.search);
 };
+const pauseEnd = function() {
+    // newSong.pause();
+    _modelJs.pauseMusic(_modelJs.stateObj.search.state);
+    (0, _musicViewJsDefault.default).update(_modelJs.stateObj.search);
+};
+// console.log(audio);
 const init = function() {
     (0, _musicViewJsDefault.default).addHandlerRender(controllerLoadMusic);
     (0, _searchViewJsDefault.default).addHandlerSearch(controllerSearchMusic);
@@ -618,6 +634,7 @@ const stateObj = {
         currentMusic: []
     }
 };
+console.log(stateObj);
 const loadMusic = async function(id) {
     try {
         // 1) Loading Search Music
@@ -655,6 +672,7 @@ const searchMusic = async function(quary) {
                 imageMedium: data.albumOfTrack.coverArt.sources[1].url
             };
         });
+        console.log(data);
     } catch (err) {
         console.log(err);
         throw err;
@@ -1350,7 +1368,13 @@ class MusicView extends (0, _viewDefault.default) {
             handler();
         });
     }
+    addAudioEndController(audio, handler) {
+        audio.addEventListener("ended", ()=>{
+            handler();
+        });
+    }
     _generateMarkup() {
+        console.log(this._data);
         return `
     <figure class="recipe__fig">
       <img src="${this._data.state.imageBig}" alt="${this._data.state.title}" class="recipe__img" />
@@ -1403,12 +1427,12 @@ class MusicView extends (0, _viewDefault.default) {
    </div>
 
 
-   <audio src="${this._data.state.url}" class="myAudio"></audio>
+   <audio src="" class="myAudio"></audio>
   
     <div class="play">
       <div class="play__album">
         <div>
-          <img src="./src/img/play.png" alt="" width="200" />
+          <img src="${this._data.state.imageMedium}" alt="" width="200" />
         </div>
         <div class="play__info">
           <div class="play__artist">
@@ -1563,9 +1587,11 @@ class searchResultView extends (0, _viewDefault.default) {
         return this._data.map(this._getGenerateMarkup).join("");
     }
     _getGenerateMarkup(data) {
+        const id = window.location.hash.slice(1);
+        console.log(id);
         return `
       <li class="preview">
-          <a class="preview__link " href="#${data.id}">
+          <a class="preview__link" href="#${data.id}">
           <figure class="preview__fig">
               <img src="${data.imageMedium}" alt="Test" />
           </figure>

@@ -9,6 +9,14 @@ const controllerPlayMusic = function (url) {
   audio = new Audio(url);
 };
 
+// let newSong;
+// function hello(song) {
+//   song.forEach((element) => {
+//     newSong = new Audio(element);
+//     console.log(newSong);
+//   });
+// }
+
 const controllerLoadMusic = async function () {
   try {
     //1) Render message
@@ -60,10 +68,16 @@ const musicController = function () {
     // toggle play icon
     model.playMusic(model.stateObj.search.state);
     // music play
+
+    if (!audio) return;
     audio.play();
+
+    musicView.addAudioEndController(audio, pauseEnd);
   } else {
     // toggle pause icon
     model.pauseMusic(model.stateObj.search.state);
+
+    if (!audio) return;
     // pause music
     audio.pause();
   }
@@ -71,6 +85,13 @@ const musicController = function () {
   musicView.update(model.stateObj.search);
 };
 
+const pauseEnd = function () {
+  // newSong.pause();
+  model.pauseMusic(model.stateObj.search.state);
+  musicView.update(model.stateObj.search);
+};
+
+// console.log(audio);
 const init = function () {
   musicView.addHandlerRender(controllerLoadMusic);
   searchView.addHandlerSearch(controllerSearchMusic);
